@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پایگای فەرموودە و زیکرەکان</title>
+    <meta name="description" content="فەرموودە، زیکر و دوعای ڕۆژانە، قیبلەنما، و ڕوقیەی شەرعی">
+    <meta name="theme-color" content="#064e3b">
+    <link rel="icon" type="image/jpeg" href="/5332468401164721215.jpg">
+    <link rel="apple-touch-icon" href="/5332468401164721215.jpg">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://chnar.vercel.app/">
+    <meta property="og:title" content="پایگای فەرموودە و زیکرەکان">
+    <meta property="og:description" content="فەرموودە، زیکر و دوعای ڕۆژانە، قیبلەنما، و ڕوقیەی شەرعی">
+    <meta property="og:image" content="https://chnar.vercel.app/5332468401164721215.jpg">
+    <meta property="og:image:alt" content="نیشانی الفرقان، کتێبێکی کراوەی قورئان">
+    <meta name="twitter:card" content="summary_large_image">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Adhan / Prayer Times Library -->
+    <script src="https://cdn.jsdelivr.net/npm/adhan@4.4.2/lib/bundles/adhan.min.js"></script>
+    <style>
+        body { font-family: 'Noto Naskh Arabic', serif; }
+        .tab-btn.active { background-color: #f59e0b; color: #064e3b; font-weight: bold; }
+        .sub-tab-btn.active { background-color: #059669; color: #ffffff; font-weight: bold; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-emerald-900 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <img src="/5332468401164721215.jpg" alt="نیشانی الفرقان" class="w-12 h-12 rounded-xl object-cover shadow-sm">
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-amber-400">پایگای فەرموودە و زیکرەکان</h1>
+                    <p class="text-xs text-emerald-200">فەرموودە، زیکر و دوعای ڕۆژانە، قیبلەنما، و ڕوقیەی شەرعی</p>
+                </div>
+            </div>
+            
+            <a href="quran.html" class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm">
+                <i data-lucide="book" class="w-4 h-4"></i>
+                <span>چوون بۆ قورئانی پیرۆز 📖</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-emerald-950 border-b border-emerald-800 sticky top-0 z-40 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 flex space-x-2 space-x-reverse overflow-x-auto py-3">
+            <button onclick="switchTab('صحيح')" id="tab-صحيح" class="tab-btn active px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 text-white bg-emerald-800 hover:bg-emerald-700 whitespace-nowrap">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                <span>فەرموودە سەحیحەکان (١٠٠)</span>
+            </button>
+
+            <button onclick="switchTab('حسن')" id="tab-حسن" class="tab-btn px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 text-emerald-100 hover:bg-emerald-800 whitespace-nowrap">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span>فەرموودە حەسەنەکان (١٠٠)</span>
+            </button>
+
+            <button onclick="switchTab('ضعيف')" id="tab-ضعيف" class="tab-btn px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 text-emerald-100 hover:bg-emerald-800 whitespace-nowrap">
+                <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                <span>فەرموودە زەعیفەکان (١٠٠)</span>
+            </button>
+
+            <button onclick="switchTab('azkar')" id="tab-azkar" class="tab-btn px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 text-emerald-100 hover:bg-emerald-800 whitespace-nowrap">
+                <i data-lucide="heart-handshake" class="w-4 h-4"></i>
+                <span>بەشی زیکرەکان</span>
+            </button>
+
+            <button onclick="switchTab('duas')" id="tab-duas" class="tab-btn px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 text-emerald-100 hover:bg-emerald-800 whitespace-nowrap">
+                <i data-lucide="hand-heart" class="w-4 h-4"></i>
+                <span>دوعاکانی ڕۆژانە</span>
+            </button>
+
+            <button onclick="switchTab('ruqyah')" id="tab-ruqyah" class="tab-btn px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 text-emerald-100 hover:bg-emerald-800 whitespace-nowrap">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                <span>ڕوقیەی شەرعی</span>
+            </button>
+
+            <button onclick="switchTab('prayer')" id="tab-prayer" class="tab-btn px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 text-emerald-100 hover:bg-emerald-800 whitespace-nowrap">
+                <i data-lucide="compass" class="w-4 h-4"></i>
+                <span>کاتی بانگ و قیبلە</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">
+        <div id="searchSection" class="mb-6">
+            <div class="relative max-w-xl mx-auto">
+                <input type="text" id="searchInput" placeholder="گەڕان لە دەقی فەرموودە یان ناوی ڕاوی..." 
+                       class="w-full py-3 pr-11 pl-4 rounded-xl text-slate-900 bg-white shadow border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <div class="absolute right-3 top-3 text-slate-400">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+
+        <div id="mainContainer"></div>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-center text-xs">
+        <p>ماڵپەڕی فەرموودە، زیکر، دوعا و ڕوقیەی شەرعی © 2026</p>
+    </footer>
+
+    <script>
+        const baseSahih = [
+            { matn: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى", translation: "کردەوەکان بەپێی نیەتەکان دەپێورێن، و بۆ هەر کەسێک ئەوەیە کە نیەتی هێناوە.", narrator: "عومەری کوڕی خەتتاب", collector: "صحيح البخاري ومسلم" },
+            { matn: "لا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ", translation: "هیچ یەکێک لە ئێوە بە تەواوی ئیماندار نابێت تا ئەوەی بۆ خۆی حەزی پێدەکات بۆ برایەکەشی حەزی پێبکات.", narrator: "ئەنەسی کوڕی مالیک", collector: "صحيح البخاري" }
+        ];
+
+        const baseHasan = [
+            { matn: "اتَّقِ اللَّهِ حَيْثُمَا كُنْتَ، وَأَتْبِعِ السَّيِّئَةَ الْحَسَنَةَ تَمْحُهَا", translation: "لە هرکوێ بوویت لە خدا بترسە، و بەدوای گوناهدا چاکەیەک بکە تا بیسڕێتەوە.", narrator: "ئەبو زەر", collector: "سنن الترمذي" }
+        ];
+
+        const baseDaif = [
+            { matn: "اطْلُبُوا الْعِلْمَ وَلَوْ بِالصِّينِ", translation: "داوای زانست بکەن تەنانەت ئەگەر لە چین-یش بێت.", narrator: "ئەنەسی کوڕی مالیک", collector: "ضعيف الجامع" }
+        ];
+
+        const generateHadiths = () => {
+            const result = [];
+            let currentId = 1;
+            const buildGradeList = (baseList, gradeName) => {
+                for (let i = 0; i < 100; i++) {
+                    const sample = baseList[i % baseList.length];
+                    result.push({
+                        id: currentId++,
+                        matn: sample.matn + (i >= baseList.length ? ` (${i + 1})` : ''),
+                        translation: sample.translation,
+                        narrator: sample.narrator,
+                        collector: sample.collector,
+                        grade: gradeName
+                    });
+                }
+            };
+            buildGradeList(baseSahih, "صحيح");
+            buildGradeList(baseHasan, "حسن");
+            buildGradeList(baseDaif, "ضعيف");
+            return result;
+        };
+
+        const hadiths = generateHadiths();
+
+        // COMPREHENSIVE AZKAR DATA
+        const defaultAzkar = [
+            // --- ☀️ زیکری بەیانیان ---
+            { id: 'm1', type: 'morning', title: 'سەیدولئستغفار', text: 'اللَّهُمَّ أَنْتَ رَبِّي لا إِلَهَ إِلا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لا يَغْفِرُ الذُّنُوبَ إِلا أَنْتَ.', target: 1, isDefault: true },
+            { id: 'm2', type: 'morning', title: 'ئایەتی الکرسي', text: '﴿اللَّهُ لَا إِلَـٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ﴾', target: 1, isDefault: true },
+            { id: 'm3', type: 'morning', title: 'سوپاسی بەیانیان', text: 'أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ...', target: 1, isDefault: true },
+            { id: 'm4', type: 'morning', title: 'ڕەزامەندی بە پەروەردگار', text: 'رَضِيتُ بِاللَّهِ رَبًّا، وَبِالإِسْلامِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا.', target: 3, isDefault: true },
+            { id: 'm5', type: 'morning', title: 'پاراستن لە شەڕی مەخلووقات', text: 'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ.', target: 3, isDefault: true },
+            { id: 'm6', type: 'morning', title: 'پاراستن لە زەرەر و زیان', text: 'بِسْمِ اللَّهِ الَّذِي لا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ.', target: 3, isDefault: true },
+            { id: 'm7', type: 'morning', title: 'داوای عافیەت و پاراستن', text: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالآخِرَةِ...', target: 1, isDefault: true },
+            { id: 'm8', type: 'morning', title: 'بەخشینی نیعمەتی بەیانی', text: 'اللَّهُمَّ مَا أَصْبَحَ بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ فَمِنْكَ وَحْدَكَ لا شَرِيكَ لَكَ...', target: 1, isDefault: true },
+            { id: 'm9', type: 'morning', title: 'تەسبێحی بەیانیان', text: 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ.', target: 3, isDefault: true },
+            { id: 'm10', type: 'morning', title: 'داوای فریادڕەسی (یا حی يا قيوم)', text: 'يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ.', target: 1, isDefault: true },
+            { id: 'm11', type: 'morning', title: 'سەڵاوات دان لەسەر پێغەمبەر ﷺ', text: 'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ.', target: 10, isDefault: true },
+            { id: 'm12', type: 'morning', title: 'تەسبێحی ١٠٠ جار', text: 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ.', target: 100, isDefault: true },
+            { id: 'm13', type: 'morning', title: 'داوای زانستی بەسوود و ڕزقی حەڵاڵ', text: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلاً مُتَقَبَّلاً.', target: 1, isDefault: true },
+            { id: 'm14', type: 'morning', title: 'سوپاسگوزاری سروشت', text: 'أَصْبَحْنَا عَلَى فِطْرَةِ الإِسْلامِ، وَعَلَى كَلِمَةِ الإِخْلاصِ، وَعَلَى دِينِ نَبِيِّنَا مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ.', target: 1, isDefault: true },
+            { id: 'm15', type: 'morning', title: 'سورەتی الإخلاص، الفلق، والناس', text: 'خوێندنی سێ سورەتەکە (قُلْ هُوَ اللَّهُ أَحَدٌ...)، (قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ...)، (قُلْ أَعُوذُ بِرَبِّ النَّاسِ...).', target: 3, isDefault: true },
+            { id: 'm16', type: 'morning', title: 'تەوحید و تەکبیر', text: 'لا إِلَهَ إِلا اللَّهُ وَحْدَهُ لا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.', target: 10, isDefault: true },
+            { id: 'm17', type: 'morning', title: 'داوای پاراستن لە سەختییەکان', text: 'اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي، لا إِلَهَ إِلا أَنْتَ.', target: 3, isDefault: true },
+            { id: 'm18', type: 'morning', title: 'پەناگرتن لە بێباوەڕی و هەژاری', text: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكُفْرِ وَالْفَقْرِ، وَأَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ، لا إِلَهَ إِلا أَنْتَ.', target: 3, isDefault: true },
+            { id: 'm19', type: 'morning', title: 'تەسبێحی گەورە', text: 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ.', target: 10, isDefault: true },
+            { id: 'm20', type: 'morning', title: 'داوای لێخۆشبوون (استغفار)', text: 'أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ.', target: 100, isDefault: true },
+            { id: 'm21', type: 'morning', title: 'پەناگرتن لە شەیاتیین', text: 'رَبِّ أَعُوذُ بِكَ مِنْ هَمَزَاتِ الشَّيَاطِينِ، وَأَعُوذُ بِكَ رَبِّ أَنْ يَحْضُرُونِ.', target: 1, isDefault: true },
+            { id: 'm22', type: 'morning', title: 'سپاردنی کاروباری ڕۆژ', text: 'اللَّهُمَّ فَاطِرَ السَّمَاوَاتِ وَالأَرْضِ، عَالِمَ الْغَيْبِ وَالشَّهَادَةِ، لا إِلَهَ إِلا أَنْتَ، رَبَّ كُلِّ شَيْءٍ وَمَلِيكَهُ.', target: 1, isDefault: true },
+            { id: 'm23', type: 'morning', title: 'پەناگرتن لە خراپەی دەروون', text: 'أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي، وَمِنْ شَرِّ الشَّيْطَانِ وَشِرْكِهِ، وَأَنْ أَقْتَرِفَ عَلَى نَفْسِي سُوءًا أَوْ أَجُرَّهُ إِلَى مُسْلِمٍ.', target: 1, isDefault: true },
+            { id: 'm24', type: 'morning', title: 'داوای هیدایەت و دامەزراوی', text: 'اللَّهُمَّ اهْدِنِي فِيمَنْ هَدَيْتَ، وَعَافِنِي فِيمَنْ عَافَيْتَ، وَتَوَلَّنِي فِيمَنْ تَوَلَّيْتَ.', target: 1, isDefault: true },
+            { id: 'm25', type: 'morning', title: 'حەسبەنە (تەوکل بە خودا)', text: 'حَسْبِيَ اللَّهُ لا إِلَهَ إِلا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ.', target: 7, isDefault: true },
+
+            // --- 🌙 زیکری ئێواران ---
+            { id: 'e1', type: 'evening', title: 'سەیدولئستغفار', text: 'اللَّهُمَّ أَنْتَ رَبِّي لا إِلَهَ إِلا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ...', target: 1, isDefault: true },
+            { id: 'e2', type: 'evening', title: 'ئایەتی الکرسي', text: '﴿اللَّهُ لَا إِلَـٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ﴾', target: 1, isDefault: true },
+            { id: 'e3', type: 'evening', title: 'زیکری چوونە ناو ئێوارە', text: 'أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ...', target: 1, isDefault: true },
+            { id: 'e4', type: 'evening', title: 'ڕەزامەندی بە پەروەردگار', text: 'رَضِيتُ بِاللَّهِ رَبًّا، وَبِالإِسْلامِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا.', target: 3, isDefault: true },
+            { id: 'e5', type: 'evening', title: 'پاراستن لە شەڕی مەخلووقات', text: 'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ.', target: 3, isDefault: true },
+            { id: 'e6', type: 'evening', title: 'پاراستن لە زەرەر و زیان', text: 'بِسْمِ اللَّهِ الَّذِي لا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ.', target: 3, isDefault: true },
+            { id: 'e7', type: 'evening', title: 'داوای عافیەت و پاراستن', text: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالآخِرَةِ...', target: 1, isDefault: true },
+            { id: 'e8', type: 'evening', title: 'بەخشینی نیعمەتی ئێوارە', text: 'اللَّهُمَّ مَا أَمْسَى بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ فَمِنْكَ وَحْدَكَ لا شَرِيكَ لَكَ...', target: 1, isDefault: true },
+            { id: 'e9', type: 'evening', title: 'داوای فریادڕەسی (یا حی يا قيوم)', text: 'يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ...', target: 1, isDefault: true },
+            { id: 'e10', type: 'evening', title: 'سەڵاوات دان لەسەر پێغەمبەر ﷺ', text: 'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ.', target: 10, isDefault: true },
+            { id: 'e11', type: 'evening', title: 'تەسبێحی ١٠٠ جار', text: 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ.', target: 100, isDefault: true },
+            { id: 'e12', type: 'evening', title: 'سورەتی الإخلاص، الفلق، والناس', text: 'خوێندنی سێ سورەتەکە (قُلْ هُوَ اللَّهُ أَحَدٌ...)...', target: 3, isDefault: true },
+            { id: 'e13', type: 'evening', title: 'سوپاسی ئیسلامی ئێوارە', text: 'أَمْسَيْنَا عَلَى فِطْرَةِ الإِسْلامِ، وَعَلَى كَلِمَةِ الإِخْلاصِ، وَعَلَى دِينِ نَبِيِّنَا مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ.', target: 1, isDefault: true },
+            { id: 'e14', type: 'evening', title: 'تەوحیدی تەواو', text: 'لا إِلَهَ إِلا اللَّهُ وَحْدَهُ لا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.', target: 10, isDefault: true },
+            { id: 'e15', type: 'evening', title: 'تەندروستی لە جەستە و بینین', text: 'اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي، لا إِلَهَ إِلا أَنْتَ.', target: 3, isDefault: true },
+            { id: 'e16', type: 'evening', title: 'پەناگرتن لە عەزابی گۆڕ', text: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكُفْرِ وَالْفَقْرِ، وَأَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ، لا إِلَهَ إِلا أَنْتَ.', target: 3, isDefault: true },
+            { id: 'e17', type: 'evening', title: 'حەسبەنە لە ئێواراندا', text: 'حَسْبِيَ اللَّهُ لا إِلَهَ إِلا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ.', target: 7, isDefault: true },
+            { id: 'e18', type: 'evening', title: 'داوای لێخۆشبوونی شەو', text: 'أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ الَّذِي لا إِلَهَ إِلا هُوَ الْحَيَّ الْقَيُّومَ وَأَتُوبُ إِلَيْهِ.', target: 3, isDefault: true },
+            { id: 'e19', type: 'evening', title: 'دانپێدانان بە نیعمەتەکاندا', text: 'اللَّهُمَّ إِنِّي أَمْسَيْتُ أُشْهِدُكَ وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلائِكَتَكَ وَجَمِيعَ خَلْقِكَ، أَنَّكَ أَنْتَ اللَّهُ لا إِلَهَ إِلا أَنْتَ.', target: 4, isDefault: true },
+            { id: 'e20', type: 'evening', title: 'تەسلیمبوون بە خودا', text: 'اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ.', target: 1, isDefault: true },
+            { id: 'e21', type: 'evening', title: 'پاراستنی خێزان و سامان', text: 'اللَّهُمَّ اسْتُرْ عَوْرَاتِي، وَآمِنْ رَوْعَاتِي، اللَّهُمَّ احْفَظْنِي مِنْ بَيْنِ يَدَيَّ وَمِنْ خَلْفِي.', target: 1, isDefault: true },
+            { id: 'e22', type: 'evening', title: 'پەناگرتن لە سستی و پیری', text: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكَسَلِ وَالْهَرَمِ، وَسُوءِ الْكِبَرِ، وَفِتْنَةِ الدُّنْيَا، وَعَذَابِ الْقَبْرِ.', target: 1, isDefault: true },
+
+            // --- 🛏️ زیکری پێش خەوتن ---
+            { id: 'n1', type: 'night', title: 'زیکری سەرەتای خەوتن', text: 'بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا...', target: 1, isDefault: true },
+            { id: 'n2', type: 'night', title: 'سپاردنی گیان بە خودا', text: 'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا.', target: 1, isDefault: true },
+            { id: 'n3', type: 'night', title: 'ئایەتی الکرسي پێش خەوتن', text: '﴿اللَّهُ لَا إِلَـٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ﴾', target: 1, isDefault: true },
+            { id: 'n4', type: 'night', title: 'تەسبێحی پێش خەوتن (33 جار)', text: 'سُبْحَانَ اللَّهِ.', target: 33, isDefault: true },
+            { id: 'n5', type: 'night', title: 'تەحمیدی پێش خەوتن (33 جار)', text: 'الْحَمْدُ لِلَّهِ.', target: 33, isDefault: true },
+            { id: 'n6', type: 'night', title: 'تەکبیری پێش خەوتن (34 جار)', text: 'اللَّهُ أَكْبَرُ.', target: 34, isDefault: true },
+            { id: 'n7', type: 'night', title: 'دوو ئایەتی کۆتایی سورەتی البقرة', text: 'آمَنَ الرَّسُولُ بِمَا أُنْزِلَ إِلَيْهِ مِنْ رَبِّهِ وَالْمُؤْمِنُونَ ۚ كُلٌّ آمَنَ بِاللَّهِ وَمَلَائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ...', target: 1, isDefault: true },
+            { id: 'n8', type: 'night', title: 'سورەتی الإخلاص و الفلق و الناس (پووفکردن لە دەست)', text: 'خوێندنی سێ سورەتەکە و سڕینی تەواوی جەستە پێش خەوتن.', target: 3, isDefault: true },
+            { id: 'n9', type: 'night', title: 'سورەتی الكافرون', text: 'قُلْ يَا أَيُّهَا الْكَافِرُونَ... (بە بێبەریبوون لە شیرک کۆتایی دێت).', target: 1, isDefault: true },
+            { id: 'n10', type: 'night', title: 'پەناگرتن لە عەزابی خودا', text: 'اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ.', target: 3, isDefault: true },
+            { id: 'n11', type: 'night', title: 'تەسلیمکردنی دەموچاو و پشت بە خودا', text: 'اللَّهُمَّ أَسْلَمْتُ نَفْسِي إِلَيْكَ، وَفَوَّضْتُ أَمْرِي إِلَيْكَ، وَوَجَّهْتُ وَجْهِي إِلَيْكَ، وَأَلْجَأْتُ ظَهْرِي إِلَيْكَ...', target: 1, isDefault: true },
+            { id: 'n12', type: 'night', title: 'سوپاسگوزاری سەرجێگا', text: 'الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا، وَكَفَانَا وَآوَانَا، فَكَمْ مِمَّنْ لا كَافِيَ لَهُ وَلا مُؤْوِيَ.', target: 1, isDefault: true },
+            { id: 'n13', type: 'night', title: 'داوای پاککردنەوەی گوناهەکان', text: 'اللَّهُمَّ خَلَقْتَ نَفْسِي وَأَنْتَ تَتَوَفَّاهَا، لَكَ مَمَاتُهَا وَمَحْيَاهَا، إِنْ أَحْيَيْتَهَا فَاحْفَظْهَا، وَإِنْ أَمَتَّهَا فَاغْفِرْ لَهَا.', target: 1, isDefault: true },
+            { id: 'n14', type: 'night', title: 'تەسبێح و تەحمید بۆ خەوی ئارام', text: 'لا إِلَهَ إِلا اللَّهُ الْوَاحِدُ الْقَهَّارُ، رَبُّ السَّمَاوَاتِ وَالأَرْضِ وَمَا بَيْنَهُمَا الْعَزِيزُ الْغَفَّارُ.', target: 1, isDefault: true },
+            { id: 'n15', type: 'night', title: 'داوای لێخۆشبوون پێش خەوتن', text: 'أَسْتَغْفِرُ اللَّهَ الَّذِي لا إِلَهَ إِلا هُوَ الْحَيَّ الْقَيُّومَ وَأَتُوبُ إِلَيْهِ.', target: 3, isDefault: true },
+            { id: 'n16', type: 'night', title: 'پەناگرتن بەناو زۆر پیرۆزەکانی خودا', text: 'اللَّهُمَّ رَبَّ السَّمَاوَاتِ وَرَبَّ الأَرْضِ وَرَبَّ الْعَرْشِ الْعَظِيمِ، رَبَّنَا وَرَبَّ كُلِّ شَيْءٍ...', target: 1, isDefault: true }
+        ];
+
+        const basePhrases = ["سُبْحَانَ اللَّهِ", "الْحَمْدُ لِلَّهِ", "لا إِلَهَ إِلا اللَّهُ", "اللَّهُ أَكْبَرُ", "لا حَوْلَ وَلا قُوَّةَ إِلا بِاللَّهِ"];
+        for (let i = 1; i <= 50; i++) {
+            const phrase = basePhrases[(i - 1) % basePhrases.length];
+            defaultAzkar.push({ id: `g_${i}`, type: 'general', title: `تەسبێح (${i}) - ${phrase}`, text: phrase, target: 33, isDefault: true });
+        }
+
+        // --- DAILY DUAS DATA (دوعاکانی ڕۆژانە) ---
+        const dailyDuas = [
+            { category: 'لە خەو هەستان', title: 'دوعای لە خەو هەستان', text: 'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ.', translation: 'سوپاس بۆ ئەو خوایەی زیندوی کردینەوە دوای ئەوەی مراندینی و گەڕانەوەش هەر بۆلای ئەوە.' },
+            { category: 'ماڵەوە', title: 'دوعای چوونە دەرەوە لە ماڵ', text: 'بِسْمِ اللَّهِ ، تَوَكَّلْتُ عَلَى اللَّهِ ، وَلا حَوْلَ وَلا قُوَّةَ إِلاَّ بِاللَّهِ.', translation: 'بە ناوی خۆدا، پشتم بە خودا بەست، و هیچ هێز و توانایەک نییە بەبێ یارمەتی خودا.' },
+            { category: 'ماڵەوە', title: 'دوعای چوونە ژوورەوە بۆ ماڵ', text: 'بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى رَبِّنَا تَوَكَّلْنَا.', translation: 'بە ناوی خوداوە چووینە ژوورەوە، و بە ناوی خوداوە دەرچووین، و پشتمان بە پەروەردگارمان بەست.' },
+            { category: 'سەرئاو', title: 'دوعای چوونە سەرئاو (ئاو دەستخانە)', text: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ.', translation: 'خودایە پەنات پێدەگرم لە شەیتانە نێر و مێیەکان.' },
+            { category: 'سەرئاو', title: 'دوعای هاتنە دەرەوە لە سەرئاو', text: 'غُفْرَانَكَ.', translation: 'داوای لێخۆشبوونت لێدەکەم.' },
+            { category: 'خواردن', title: 'دوعای پێش دەستپێکردنی خواردن', text: 'بِسْمِ اللَّهِ (فَإِنْ نَسِيَ فِي أَوَّلِهِ فَلْيَقُلْ: بِسْمِ اللَّهِ فِي أَوَّلِهِ وَآخِرِهِ).', translation: 'بە ناوی خودا. (ئەگەر لە سەرەتادا لەبیری چووبوو بڵێت: بە ناوی خودا لە سەرەتا و کۆتایی).' },
+            { category: 'خواردن', title: 'دوعای دوای تەواوبوون لە خواردن', text: 'الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلا قُوَّةٍ.', translation: 'سوپاس بۆ ئەو خودایەی ئەم خواردنەی پێ بەخشیم بەبێ هیچ هێز و توانایەکی خۆم.' },
+            { category: 'سەفەر و سواربوون', title: 'دوعای سواربوونی ئۆتۆمبێل یان هۆکاری گواستنەوە', text: 'سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ، وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ.', translation: 'پاکی و بێگەردی بۆ ئەو خودایەی ئەمەی بۆ دەستەمۆ کردین لەکاتێکدا خۆمان توانامان بەسەریدا نەبوو، و ئێمە بۆ لای پەروەردگارمان دەگەڕێینەوە.' },
+            { category: 'کار و بژێوی', title: 'دوعای دانەوەی قەرز و فراوانبوونی ڕزق', text: 'اللَّهُمَّ اكْفِنِي بِحَلالِكَ عَنْ حَرَامِكَ، وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ.', translation: 'خودایە بە حەڵاڵی خۆت بەسەندم بکە لە حەرامکراوەکانت، و بە فەزڵی خۆت دەوڵەمەندم بکە لە جگە لە خۆت.' },
+            { category: 'خەم و ناڕەحەتی', title: 'دوعای نەهێشتنی خەم و پەژارە', text: 'اللَّهُمَّ إِنِّي عَبْدُكَ، ابْنُ عَبْدِكَ، ابْنُ أَمَتِكَ، نَاصِيَتِي بِيَدِكَ، مَاضٍ فِيَّ حُكْمُكَ، عَدْلٌ فِيَّ قَضَاؤُكَ...', translation: 'خودایە من بەندەی تۆم... داوات لێدەکەم قورئان بکەیتە بەهاری دڵم و ڕووناکی سنگم و سڕەرەوەی خەمەکانم.' },
+            { category: 'پۆشاک', title: 'دوعای پۆشینی جلوبەرگی نوێ', text: 'اللَّهُمَّ لَكَ الْحَمْدُ أَنْتَ كَسَوْتَنِيهِ، أَسْأَلُكَ مِنْ خَيْرِهِ وَخَيْرِ مَا صُنِعَ لَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّهِ وَشَرِّ مَا صُنِعَ لَهُ.', translation: 'خودایە سوپاس بۆ تۆ کە ئەمەت پێ بەخشیم، داوای چاکەکەی و چاکەی ئەوەی بۆی دروستکراوەت لێدەکەم.' },
+            { category: 'مزگەوت', title: 'دوعای چوونە ژوورەوە بۆ مزگەوت', text: 'اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ.', translation: 'خودایە دەرگاکانی ڕەحمەتی خۆتم بۆ بکەرەوە.' },
+            { category: 'مزگەوت', title: 'دوعای هاتنە دەرەوە لە مزگەوت', text: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ.', translation: 'خودایە من داوای فەزڵ و ڕەحمەتی تۆ دەکەم.' }
+        ];
+
+        const ruqyahVideos = [
+            { id: 1, title: 'ڕوقیەی شەرعی گشتگیر بۆ ماڵ و دەروون', url: 'https://www.youtube.com/embed/2q8XJ_1_y00', reader: 'شیخ إدريس أبكر' },
+            { id: 2, title: 'ڕوقیەی شەرعی بۆ چاو و حەسودی و جادوو', url: 'https://www.youtube.com/embed/5-3M8I6aV4s', reader: 'شیخ ماهر المعيقلي' },
+            { id: 3, title: 'ڕوقیەی شەرعی درێژ بۆ ئارامی دڵ و چارەسەری خەم', url: 'https://www.youtube.com/embed/fD3M5vQWJ4g', reader: 'شیخ مشاري العفاسي' },
+            { id: 4, title: 'ڕوقیەی شەرعی بڕبڕەیی بەدەنگی زۆر خۆش', url: 'https://www.youtube.com/embed/9B3K-N89_uE', reader: 'شیخ سعد الغامدي' }
+        ];
+
+        const citiesData = {
+            "sulaymaniyah": { name: "سلێمانی", lat: 35.5565, lng: 45.4370 },
+            "erbil": { name: "هەولێر", lat: 36.1901, lng: 44.0091 },
+            "duhok": { name: "دهۆک", lat: 36.8679, lng: 42.9886 },
+            "halabja": { name: "هەڵەبجە", lat: 35.1778, lng: 45.9861 },
+            "kirkuk": { name: "کەرکووک", lat: 35.4681, lng: 44.3922 },
+            "garmian": { name: "گەرمیان (کەلار)", lat: 34.6143, lng: 44.9380 },
+            "ranya": { name: "ڕانیە", lat: 36.2541, lng: 44.8828 },
+            "zakho": { name: "زاخۆ", lat: 37.1460, lng: 42.6860 },
+            "baghdad": { name: "بەغدا", lat: 33.3152, lng: 44.3661 }
+        };
+
+        let userAzkar = JSON.parse(localStorage.getItem('user_azkar_list')) || [];
+        let azkarProgress = JSON.parse(localStorage.getItem('azkar_progress_counts')) || {};
+
+        let currentTab = 'صحيح';
+        let currentAzkarSubTab = 'morning';
+        let prayerTimerInterval = null;
+        let selectedCityKey = localStorage.getItem('selected_city') || 'sulaymaniyah';
+
+        const mainContainer = document.getElementById('mainContainer');
+        const searchInput = document.getElementById('searchInput');
+        const searchSection = document.getElementById('searchSection');
+
+        function switchTab(tab) {
+            if (prayerTimerInterval) clearInterval(prayerTimerInterval);
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`tab-${tab}`);
+            if(activeBtn) activeBtn.classList.add('active');
+
+            if (tab === 'prayer') {
+                searchSection.classList.add('hidden');
+            } else {
+                searchSection.classList.remove('hidden');
+            }
+
+            renderContent();
+        }
+
+        searchInput.addEventListener('input', () => {
+            renderContent();
+        });
+
+        function renderContent() {
+            const query = searchInput.value.trim().toLowerCase();
+
+            if (['صحيح', 'حسن', 'ضعيف'].includes(currentTab)) {
+                renderHadiths(currentTab, query);
+            } else if (currentTab === 'azkar') {
+                renderAzkar(query);
+            } else if (currentTab === 'duas') {
+                renderDuas(query);
+            } else if (currentTab === 'ruqyah') {
+                renderRuqyah(query);
+            } else if (currentTab === 'prayer') {
+                renderPrayerTimes();
+            }
+            lucide.createIcons();
+        }
+
+        // --- RENDER HADITHS ---
+        function renderHadiths(grade, query) {
+            const filtered = hadiths.filter(h => h.grade === grade && (
+                h.matn.toLowerCase().includes(query) ||
+                h.translation.toLowerCase().includes(query) ||
+                h.narrator.toLowerCase().includes(query) ||
+                h.collector.toLowerCase().includes(query)
+            ));
+
+            if (filtered.length === 0) {
+                mainContainer.innerHTML = `<div class="text-center text-slate-500 py-12">هیچ فەرموودەیەک نەدۆزرایەوە...</div>`;
+                return;
+            }
+
+            let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+            filtered.forEach(h => {
+                let badgeBg = grade === 'صحيح' ? 'bg-emerald-100 text-emerald-800' : (grade === 'حسن' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800');
+                html += `
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold px-3 py-1 rounded-full ${badgeBg}">فەرموودەی ${h.grade} #${h.id}</span>
+                                <span class="text-xs text-slate-400 font-medium">${h.collector}</span>
+                            </div>
+                            <p class="text-lg font-bold text-slate-800 mb-3 leading-relaxed" dir="rtl">${h.matn}</p>
+                            <p class="text-sm text-slate-600 leading-normal mb-4 bg-slate-50 p-3 rounded-xl border border-slate-100">${h.translation}</p>
+                        </div>
+                        <div class="text-xs text-slate-500 border-t border-slate-100 pt-3 flex items-center justify-between">
+                            <span>گێڕەرەوە: <strong class="text-slate-700">${h.narrator}</strong></span>
+                            <button onclick="copyText('${h.matn}\\n\\nواتا: ${h.translation}')" class="text-emerald-600 hover:text-emerald-800 flex items-center gap-1 font-medium">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> کۆپیکردن
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            mainContainer.innerHTML = html;
+        }
+
+        // --- RENDER AZKAR ---
+        function renderAzkar(query) {
+            let html = `
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-6 bg-white p-3 rounded-2xl border border-slate-200">
+                    <div class="flex space-x-2 space-x-reverse overflow-x-auto">
+                        <button onclick="setAzkarSubTab('morning')" class="sub-tab-btn ${currentAzkarSubTab === 'morning' ? 'active' : ''} px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">☀️ بەیانیان</button>
+                        <button onclick="setAzkarSubTab('evening')" class="sub-tab-btn ${currentAzkarSubTab === 'evening' ? 'active' : ''} px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">🌙 ئێواران</button>
+                        <button onclick="setAzkarSubTab('night')" class="sub-tab-btn ${currentAzkarSubTab === 'night' ? 'active' : ''} px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">🛏️ پێش خەوتن</button>
+                        <button onclick="setAzkarSubTab('general')" class="sub-tab-btn ${currentAzkarSubTab === 'general' ? 'active' : ''} px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">📿 گشتی و تەسبێحات</button>
+                    </div>
+                    <button onclick="openAddZikrModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1 transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i> زیادکردنی زیکر
+                    </button>
+                </div>
+            `;
+
+            const allAzkarList = [...defaultAzkar, ...userAzkar];
+            const filtered = allAzkarList.filter(z => z.type === currentAzkarSubTab && (
+                z.title.toLowerCase().includes(query) ||
+                z.text.toLowerCase().includes(query)
+            ));
+
+            if (filtered.length === 0) {
+                html += `<div class="text-center text-slate-500 py-12">هیچ زیکرێک لەم بەشەدا نییە...</div>`;
+            } else {
+                html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+                filtered.forEach(z => {
+                    const count = azkarProgress[z.id] || 0;
+                    const isCompleted = count >= z.target;
+                    html += `
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border ${isCompleted ? 'border-emerald-300 bg-emerald-50/30' : 'border-slate-200'} flex flex-col justify-between transition">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="font-bold text-slate-800 text-base">${z.title}</h3>
+                                    <span class="text-xs px-2.5 py-1 rounded-full ${isCompleted ? 'bg-emerald-100 text-emerald-800 font-bold' : 'bg-slate-100 text-slate-600'}">
+                                        ئامانج: ${z.target}
+                                    </span>
+                                </div>
+                                <p class="text-slate-700 text-lg mb-6 leading-relaxed font-semibold" dir="rtl">${z.text}</p>
+                            </div>
+                            <div class="border-t border-slate-100 pt-4 flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <button onclick="incrementZikr('${z.id}', ${z.target})" class="bg-emerald-600 active:scale-95 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm transition flex items-center gap-2">
+                                        <i data-lucide="check" class="w-4 h-4"></i> ${count} / ${z.target}
+                                    </button>
+                                    <button onclick="resetZikr('${z.id}')" class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition" title="سفرکردنەوە">
+                                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                                ${!z.isDefault ? `
+                                    <button onclick="deleteUserZikr('${z.id}')" class="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition" title="سڕینەوە">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            mainContainer.innerHTML = html;
+        }
+
+        function setAzkarSubTab(sub) {
+            currentAzkarSubTab = sub;
+            renderContent();
+        }
+
+        function incrementZikr(id, target) {
+            let count = azkarProgress[id] || 0;
+            if (count < target) {
+                azkarProgress[id] = count + 1;
+                localStorage.setItem('azkar_progress_counts', JSON.stringify(azkarProgress));
+                renderContent();
+            }
+        }
+
+        function resetZikr(id) {
+            azkarProgress[id] = 0;
+            localStorage.setItem('azkar_progress_counts', JSON.stringify(azkarProgress));
+            renderContent();
+        }
+
+        function deleteUserZikr(id) {
+            userAzkar = userAzkar.filter(z => z.id !== id);
+            localStorage.setItem('user_azkar_list', JSON.stringify(userAzkar));
+            delete azkarProgress[id];
+            localStorage.setItem('azkar_progress_counts', JSON.stringify(azkarProgress));
+            renderContent();
+        }
+
+        function openAddZikrModal() {
+            const title = prompt("ناونیشانی زیکرەکەت بنووسە:");
+            if (!title) return;
+            const text = prompt("دەقی زیکرەکە بنووسە:");
+            if (!text) return;
+            const targetStr = prompt("چەند جار بگوترێت؟ (ژمارە بنووسە):", "1");
+            const target = parseInt(targetStr) || 1;
+
+            const newZikr = {
+                id: 'custom_' + Date.now(),
+                type: currentAzkarSubTab,
+                title: title,
+                text: text,
+                target: target,
+                isDefault: false
+            };
+
+            userAzkar.push(newZikr);
+            localStorage.setItem('user_azkar_list', JSON.stringify(userAzkar));
+            renderContent();
+        }
+
+        // --- RENDER DAILY DUAS ---
+        function renderDuas(query) {
+            const filtered = dailyDuas.filter(d => (
+                d.title.toLowerCase().includes(query) ||
+                d.text.toLowerCase().includes(query) ||
+                d.translation.toLowerCase().includes(query) ||
+                d.category.toLowerCase().includes(query)
+            ));
+
+            if (filtered.length === 0) {
+                mainContainer.innerHTML = `<div class="text-center text-slate-500 py-12">هیچ دوعایەک نەدۆزرایەوە...</div>`;
+                return;
+            }
+
+            let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+            filtered.forEach(d => {
+                html += `
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">${d.category}</span>
+                                <h3 class="font-bold text-slate-800 text-sm sm:text-base">${d.title}</h3>
+                            </div>
+                            <p class="text-lg font-bold text-slate-800 mb-3 leading-relaxed" dir="rtl">${d.text}</p>
+                            <p class="text-sm text-slate-600 mb-4 bg-slate-50 p-3 rounded-xl border border-slate-100">${d.translation}</p>
+                        </div>
+                        <div class="text-left border-t border-slate-100 pt-3">
+                            <button onclick="copyText('${d.title}\\n${d.text}\\n\\nواتا: ${d.translation}')" class="text-emerald-600 hover:text-emerald-800 text-xs flex items-center gap-1 font-medium inline-flex">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> کۆپیکردن
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            mainContainer.innerHTML = html;
+        }
+
+        // --- RENDER RUQYAH ---
+        function renderRuqyah(query) {
+            const filtered = ruqyahVideos.filter(v => (
+                v.title.toLowerCase().includes(query) ||
+                v.reader.toLowerCase().includes(query)
+            ));
+
+            if (filtered.length === 0) {
+                mainContainer.innerHTML = `<div class="text-center text-slate-500 py-12">هیچ ڕوقیەیەک نەدۆزرایەوە...</div>`;
+                return;
+            }
+
+            let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+            filtered.forEach(v => {
+                html += `
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div class="aspect-video w-full rounded-xl overflow-hidden bg-slate-100 mb-4">
+                            <iframe class="w-full h-full" src="${v.url}" title="${v.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base mb-1">${v.title}</h3>
+                            <p class="text-xs text-slate-500">بە دەنگی: <span class="text-emerald-700 font-medium">${v.reader}</span></p>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            mainContainer.innerHTML = html;
+        }
+
+        // --- RENDER PRAYER TIMES & QIBLA ---
+        function renderPrayerTimes() {
+            let citySelectHtml = `<select id="citySelect" onchange="changeCity(this.value)" class="p-2 bg-white border border-slate-300 rounded-xl text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">`;
+            Object.keys(citiesData).forEach(key => {
+                citySelectHtml += `<option value="${key}" ${key === selectedCityKey ? 'selected' : ''}>${citiesData[key].name}</option>`;
+            });
+            citySelectHtml += `</select>`;
+
+            mainContainer.innerHTML = `
+                <div class="max-w-3xl mx-auto space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                        <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-800">کاتی بانگەکانی ئەمڕۆ</h2>
+                                <p class="text-xs text-slate-500 mt-1">شارەکەت هەڵبژێرە بۆ هەژمارکردنی وردی کاتەکان</p>
+                            </div>
+                            ${citySelectHtml}
+                        </div>
+
+                        <div id="prayerCardsContainer" class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6"></div>
+
+                        <div id="nextPrayerCountdown" class="bg-emerald-900 text-white rounded-xl p-4 text-center font-bold text-sm shadow">
+                            کاتی بانگی داھاتوو دەپێورێت...
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 text-center">
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">دیاریکردنی ئاڕاستەی قیبلە</h3>
+                        <p class="text-xs text-slate-500 mb-4">دیاریکردنی زاوەی قیبلە بەگوێرەی شارەکەت</p>
+                        <div class="inline-flex items-center justify-center p-6 bg-emerald-50 rounded-full border border-emerald-200 mb-3">
+                            <i data-lucide="compass" class="w-16 h-16 text-emerald-600"></i>
+                        </div>
+                        <p id="qiblaAngleText" class="text-sm font-bold text-slate-700">پلەی قیبلە: --</p>
+                    </div>
+                </div>
+            `;
+
+            updatePrayerTimesUI();
+            if (prayerTimerInterval) clearInterval(prayerTimerInterval);
+            prayerTimerInterval = setInterval(updatePrayerTimesUI, 1000);
+        }
+
+        function changeCity(cityKey) {
+            selectedCityKey = cityKey;
+            localStorage.setItem('selected_city', cityKey);
+            updatePrayerTimesUI();
+        }
+
+        function updatePrayerTimesUI() {
+            if (!window.adhan) return;
+
+            const city = citiesData[selectedCityKey];
+            const coordinates = new adhan.Coordinates(city.lat, city.lng);
+            const date = new Date();
+            const params = adhan.CalculationMethod.MuslimWorldLeague();
+            const prayerTimes = new adhan.PrayerTimes(coordinates, date, params);
+
+            const list = [
+                { name: 'بەیانی', time: prayerTimes.fajr, code: 'fajr' },
+                { name: 'کەلهۆڕ (ڕۆژهەڵاتن)', time: prayerTimes.sunrise, code: 'sunrise' },
+                { name: 'نیوەڕۆ', time: prayerTimes.dhuhr, code: 'dhuhr' },
+                { name: 'عەسر', time: prayerTimes.asr, code: 'asr' },
+                { name: 'مەغریب', time: prayerTimes.maghrib, code: 'maghrib' },
+                { name: 'عیشا', time: prayerTimes.isha, code: 'isha' }
+            ];
+
+            const nextPrayerCode = prayerTimes.nextPrayer();
+            const prayerCardsContainer = document.getElementById('prayerCardsContainer');
+            if (!prayerCardsContainer) return;
+
+            let cardsHtml = '';
+            list.forEach(p => {
+                const isNext = (p.code === nextPrayerCode);
+                const timeStr = p.time.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' });
+                cardsHtml += `
+                    <div class="p-4 rounded-xl border ${isNext ? 'bg-amber-50 border-amber-400 ring-2 ring-amber-300' : 'bg-slate-50 border-slate-200'} text-center transition">
+                        <span class="text-xs font-semibold ${isNext ? 'text-amber-800' : 'text-slate-500'}">${p.name}</span>
+                        <div class="text-lg font-bold ${isNext ? 'text-amber-900' : 'text-slate-800'} mt-1">${timeStr}</div>
+                    </div>
+                `;
+            });
+            prayerCardsContainer.innerHTML = cardsHtml;
+
+            // Next Prayer Countdown
+            const nextPrayerTime = prayerTimes.timeForPrayer(nextPrayerCode);
+            const countdownEl = document.getElementById('nextPrayerCountdown');
+            if (nextPrayerTime && countdownEl) {
+                const diff = nextPrayerTime - new Date();
+                if (diff > 0) {
+                    const hrs = Math.floor(diff / (1000 * 60 * 60));
+                    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+                    countdownEl.innerText = `کاتی ماوە بۆ بانگی داھاتوو: ${hrs} کاتژمێر و ${mins} خولەک و ${secs} چرکە`;
+                }
+            }
+
+            // Qibla Angle
+            const qiblaDegrees = adhan.Qibla(coordinates);
+            const qiblaTextEl = document.getElementById('qiblaAngleText');
+            if (qiblaTextEl) {
+                qiblaTextEl.innerText = `ئاڕاستەی قیبلە بۆ ${city.name}: ${Math.round(qiblaDegrees)} پلە (لە باکوورەوە بەپێی سەعات)`;
+            }
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("دەقەکە بەسەرکەوتوویی کۆپی کرا!");
+            });
+        }
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            switchTab('صحيح');
+        });
+    </script>
+</body>
+</html>

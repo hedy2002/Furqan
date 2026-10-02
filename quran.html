@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قورئانی پیرۆز - دەنگ و دەق</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Naskh Arabic', serif; }
+        .quran-font { font-family: 'Amiri', serif; }
+        .active-ayah { background-color: #d1fae5 !important; border-right: 4px solid #059669; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-emerald-200">
+
+    <!-- Header -->
+    <header class="bg-emerald-900 text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3 sm:py-4 flex justify-between items-center gap-2">
+            <div class="flex items-center space-x-2 sm:space-x-3 space-x-reverse">
+                <div class="p-2 bg-emerald-800/80 rounded-xl text-amber-400 shrink-0">
+                    <i data-lucide="book-open" class="w-6 h-6 sm:w-8 sm:h-8"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-2xl font-bold text-amber-400 leading-tight">قورئانی پیرۆز</h1>
+                    <p class="text-[10px] sm:text-xs text-emerald-200 hidden sm:block">خوێندنەوە و گوێگرتن لە دەنگی قورئان خوێنەکان</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <!-- Mobile & Tablet Surah Toggle Button -->
+                <button onclick="toggleSidebar()" class="lg:hidden flex items-center gap-1.5 bg-emerald-800 hover:bg-emerald-700 text-amber-300 font-bold px-3 py-2 rounded-xl text-xs border border-emerald-700 transition shrink-0">
+                    <i data-lucide="list" class="w-4 h-4"></i>
+                    <span>سورەتەکان</span>
+                </button>
+
+                <a href="index.html" class="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm transition shrink-0">
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">گەڕانەوە بۆ سەرەتا</span>
+                    <span class="sm:hidden">سەرەتا</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 relative">
+        
+        <!-- Sidebar Backdrop for Mobile/Tablet -->
+        <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
+
+        <!-- Sidebar: List of Surahs & Khatm Tracker -->
+        <aside id="sidebar" class="fixed lg:sticky top-0 lg:top-[88px] right-0 h-full lg:h-[calc(100vh-120px)] w-[280px] sm:w-[320px] lg:w-auto bg-white p-4 z-50 lg:z-0 shadow-2xl lg:shadow-sm lg:border rounded-l-2xl lg:rounded-2xl flex flex-col transform translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out lg:col-span-1">
+            
+            <div class="flex items-center justify-between lg:hidden mb-3 border-b pb-2">
+                <h3 class="font-bold text-emerald-900 text-sm">سورەتەکان & هەڵبژاردن</h3>
+                <button onclick="toggleSidebar()" class="p-1 rounded-lg text-slate-400 hover:bg-slate-100">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Reciter Selection -->
+            <div class="mb-3">
+                <label class="block text-xs font-bold text-slate-700 mb-1">دەنگی قورئان خوێن:</label>
+                <select id="reciterSelect" onchange="changeReciter(this.value)" class="w-full p-2 bg-slate-50 border rounded-xl text-xs font-bold text-emerald-900 focus:ring-2 focus:ring-emerald-500 outline-none">
+                    <option value="Alafasy_128kbps">مشاري العفاسي</option>
+                    <option value="Abdul_Basit_Murattal_192kbps">عبد الباسط عبد الصمد</option>
+                    <option value="Ghamadi_40kbps">سعد الغامدي</option>
+                    <option value="Maher_AlMuaiqly_64kbps">ماهر المعيقلي</option>
+                    <option value="Minshawy_Murattal_128kbps">محمد صديق المنشاوي</option>
+                </select>
+            </div>
+
+            <!-- Khatm Tracker Widget -->
+            <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 mb-3 shadow-inner">
+                <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-1.5 text-emerald-900 font-bold text-xs">
+                        <i data-lucide="bookmark-check" class="w-4 h-4 text-emerald-600"></i>
+                        <span>شوێنی خەتمەکەم</span>
+                    </div>
+                    <button onclick="saveCurrentKhatmPosition()" class="text-[10px] bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-1 rounded-lg transition shadow-sm">
+                        تۆمارکردن لێرە
+                    </button>
+                </div>
+                <p id="khatmStatusText" class="text-[11px] text-slate-600 font-medium truncate mb-2">هیچ شوێنێک تۆمار نەکراوە</p>
+                <button onclick="goToKhatmPosition()" class="w-full bg-white hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-bold py-1.5 rounded-xl transition text-center block">
+                    درێژەپێدان بە خەتم
+                </button>
+            </div>
+
+            <!-- Surah Search -->
+            <div class="relative mb-3">
+                <input type="text" id="surahSearch" oninput="filterSurahs()" placeholder="گەڕان بۆ سورەت..." class="w-full py-2 pr-8 pl-3 text-xs border rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <i data-lucide="search" class="w-3.5 h-3.5 absolute right-2.5 top-2.5 text-slate-400"></i>
+            </div>
+
+            <!-- Surahs List -->
+            <div id="surahList" class="flex-1 overflow-y-auto space-y-1 pr-1">
+                <p class="text-xs text-slate-400 text-center py-4">لە ڕاگەیشتندایە...</p>
+            </div>
+        </aside>
+
+        <!-- Main Quran Content Area -->
+        <section class="lg:col-span-3 bg-white p-4 sm:p-6 rounded-2xl border shadow-sm flex flex-col min-h-[70vh] lg:min-h-[calc(100vh-120px)]">
+            
+            <!-- Surah Header Info -->
+            <div id="surahHeader" class="border-b pb-3 sm:pb-4 mb-3 sm:mb-4 flex justify-between items-center gap-2">
+                <div>
+                    <h2 id="currentSurahName" class="text-lg sm:text-2xl font-bold text-emerald-900">سورة الفاتحة</h2>
+                    <p id="currentSurahInfo" class="text-[11px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">مەکی • ٧ ئایەت</p>
+                </div>
+                <div>
+                    <button onclick="stopAudio()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition shrink-0">
+                        <i data-lucide="square" class="w-3.5 h-3.5"></i>
+                        <span>وەستاندنی گشتی</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bismillah -->
+            <div id="bismillahContainer" class="text-center my-3 sm:my-5 quran-font text-xl sm:text-2xl text-emerald-800 font-bold">
+                بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+            </div>
+
+            <!-- Ayahs List Container -->
+            <div id="ayahsContainer" class="flex-1 overflow-y-auto space-y-3 sm:space-y-4 pr-1 sm:pr-2">
+                <!-- Ayahs dynamically loaded here -->
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-xs border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6">
+            <p>ماڵپەڕی فەرموودە زیکر دوعا و ڕوقییەی شەرعی © 2026</p>
+            <span class="hidden sm:inline text-slate-700">|</span>
+            <p>دروست کراوە لەلایەن <span class="text-amber-400 font-bold">Furqan</span> (07738771840)</p>
+            <span class="hidden sm:inline text-slate-700">|</span>
+            <a href="https://www.instagram.com/pixelchnar?stkn=bXo4ajBuZm1xZWFj" target="_blank" rel="noopener noreferrer" class="text-pink-400 hover:text-pink-300 transition flex items-center gap-1 font-medium">
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+                <span>ئینستاگرام</span>
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        let allSurahs = [];
+        let currentSurahNumber = 1;
+        let currentReciter = 'Alafasy_128kbps';
+        let currentAudio = null;
+        let currentPlayingAyahIndex = null;
+        let ayahsData = [];
+        let lastReadAyahInSurah = 1;
+
+        // Toggle Mobile/Tablet Sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            const isClosed = sidebar.classList.contains('translate-x-full');
+            
+            if (isClosed) {
+                sidebar.classList.remove('translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
+
+        // Fetch All Surahs List
+        async function fetchSurahs() {
+            try {
+                const res = await fetch('https://api.alquran.cloud/v1/surah');
+                const data = await res.json();
+                allSurahs = data.data;
+                renderSurahList(allSurahs);
+                
+                loadKhatmPositionUI();
+                loadSurah(1);
+            } catch (err) {
+                console.error("کێشە لە هێنانی سورەتەکان:", err);
+            }
+        }
+
+        function renderSurahList(surahs) {
+            const listEl = document.getElementById('surahList');
+            listEl.innerHTML = surahs.map(s => `
+                <button onclick="selectSurahMobile(${s.number})" class="w-full text-right p-2.5 sm:p-3 rounded-xl text-xs sm:text-sm hover:bg-emerald-50 flex justify-between items-center border border-transparent transition ${s.number === currentSurahNumber ? 'bg-emerald-100 font-bold text-emerald-900 border-emerald-300' : 'text-slate-700'}">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-[10px] font-bold shrink-0">${s.number}</span>
+                        <span class="truncate">${s.name}</span>
+                    </div>
+                    <span class="text-[10px] text-slate-400 shrink-0">${s.numberOfAyahs} ئایەت</span>
+                </button>
+            `).join('');
+        }
+
+        function selectSurahMobile(surahNumber) {
+            loadSurah(surahNumber);
+            if (window.innerWidth < 1024) {
+                toggleSidebar();
+            }
+        }
+
+        function filterSurahs() {
+            const q = document.getElementById('surahSearch').value.toLowerCase();
+            const filtered = allSurahs.filter(s => s.name.includes(q) || s.englishName.toLowerCase().includes(q) || String(s.number).includes(q));
+            renderSurahList(filtered);
+        }
+
+        // Load specific Surah Ayahs
+        async function loadSurah(surahNumber) {
+            stopAudio();
+            currentSurahNumber = surahNumber;
+            renderSurahList(allSurahs);
+
+            const surahInfo = allSurahs.find(s => s.number === surahNumber);
+            document.getElementById('currentSurahName').textContent = surahInfo.name;
+            document.getElementById('currentSurahInfo').textContent = `${surahInfo.revelationType === 'Meccan' ? 'مەکی' : 'مەدەنی'} • ${surahInfo.numberOfAyahs} ئایەت`;
+
+            if (surahNumber === 9) {
+                document.getElementById('bismillahContainer').classList.add('hidden');
+            } else {
+                document.getElementById('bismillahContainer').classList.remove('hidden');
+            }
+
+            try {
+                const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}`);
+                const data = await res.json();
+                ayahsData = data.data.ayahs;
+                renderAyahs(ayahsData);
+            } catch (err) {
+                alert("کێشەیەک لە هێنانی ئایەتەکان ڕووی دا. تکایە ئینتەرنێتەکەت بپشکنە.");
+            }
+        }
+
+        function renderAyahs(ayahs) {
+            const container = document.getElementById('ayahsContainer');
+            container.innerHTML = ayahs.map((a, index) => `
+                <div id="ayah-box-${index}" class="p-3.5 sm:p-5 rounded-2xl border bg-slate-50/70 transition flex flex-col gap-3">
+                    <div class="flex justify-between items-center text-xs text-slate-500 border-b pb-2.5">
+                        <span class="font-bold text-emerald-800">ئایەتی (${a.numberInSurah})</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="markAyahAsKhatm(${a.numberInSurah})" title="دیاریکردن وەک شوێنی خەتم" class="text-emerald-700 hover:bg-emerald-100 px-2 py-1 rounded-lg text-[11px] flex items-center gap-1 transition bg-emerald-50 border border-emerald-200">
+                                <i data-lucide="bookmark" class="w-3.5 h-3.5"></i>
+                                <span class="hidden sm:inline">خەتم لێرە</span>
+                            </button>
+                            
+                            <!-- Dynamic Play/Stop Button for each ayah -->
+                            <div id="ayah-btn-container-${index}">
+                                <button onclick="playAyah(${index})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-xs transition shadow-sm">
+                                    <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                                    <span>گوێگرتن</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="quran-font text-xl sm:text-2xl lg:text-3xl text-slate-800 leading-loose text-right dir-rtl">
+                        ${a.text} ﴿${a.numberInSurah}﴾
+                    </p>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        // Play Audio Function
+        function playAyah(index) {
+            stopAudio();
+            
+            currentPlayingAyahIndex = index;
+            const ayah = ayahsData[index];
+            lastReadAyahInSurah = ayah.numberInSurah;
+            
+            const formattedSurah = String(currentSurahNumber).padStart(3, '0');
+            const formattedAyah = String(ayah.numberInSurah).padStart(3, '0');
+            
+            const audioUrl = `https://everyayah.com/data/${currentReciter}/${formattedSurah}${formattedAyah}.mp3`;
+            
+            // Highlight Box
+            const box = document.getElementById(`ayah-box-${index}`);
+            if (box) {
+                box.classList.add('active-ayah');
+                box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            // Change button to Stop
+            const btnContainer = document.getElementById(`ayah-btn-container-${index}`);
+            if(btnContainer) {
+                btnContainer.innerHTML = `
+                    <button onclick="stopAudio()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-xs transition shadow-sm">
+                        <i data-lucide="square" class="w-3.5 h-3.5"></i>
+                        <span>وەستاندن</span>
+                    </button>
+                `;
+                lucide.createIcons();
+            }
+
+            currentAudio = new Audio(audioUrl);
+            currentAudio.play().catch(e => {
+                alert("کێشەیەک لە لێدانی دەنگەکە هەیە. دڵنیابەرەوە لە ئینتەرنێتەکەت.");
+            });
+
+            currentAudio.onended = () => {
+                resetAyahButton(index);
+                if (index + 1 < ayahsData.length) {
+                    playAyah(index + 1);
+                } else {
+                    stopAudio();
+                }
+            };
+        }
+
+        function resetAyahButton(index) {
+            const btnContainer = document.getElementById(`ayah-btn-container-${index}`);
+            if(btnContainer) {
+                btnContainer.innerHTML = `
+                    <button onclick="playAyah(${index})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-xs transition shadow-sm">
+                        <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                        <span>گوێگرتن</span>
+                    </button>
+                `;
+                lucide.createIcons();
+            }
+        }
+
+        function stopAudio() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+            if (currentPlayingAyahIndex !== null) {
+                const box = document.getElementById(`ayah-box-${currentPlayingAyahIndex}`);
+                if (box) box.classList.remove('active-ayah');
+                
+                resetAyahButton(currentPlayingAyahIndex);
+                currentPlayingAyahIndex = null;
+            }
+        }
+
+        function changeReciter(newReciter) {
+            currentReciter = newReciter;
+            if (currentPlayingAyahIndex !== null) {
+                playAyah(currentPlayingAyahIndex);
+            }
+        }
+
+        // --- Khatm Functions ---
+        function saveCurrentKhatmPosition() {
+            const surahObj = allSurahs.find(s => s.number === currentSurahNumber);
+            const khatmData = {
+                surahNumber: currentSurahNumber,
+                surahName: surahObj ? surahObj.name : 'سورة الفاتحة',
+                ayahNumber: lastReadAyahInSurah || 1
+            };
+            localStorage.setItem('quran_khatm_position', JSON.stringify(khatmData));
+            loadKhatmPositionUI();
+            alert("شوێنی خەتمەکەت بە سەرکەوتوویی پاشەکەوت کرا!");
+        }
+
+        function markAyahAsKhatm(ayahNum) {
+            lastReadAyahInSurah = ayahNum;
+            saveCurrentKhatmPosition();
+        }
+
+        function loadKhatmPositionUI() {
+            const saved = localStorage.getItem('quran_khatm_position');
+            const statusEl = document.getElementById('khatmStatusText');
+            if (saved) {
+                const data = JSON.parse(saved);
+                statusEl.textContent = `${data.surahName} - ئایەتی ${data.ayahNumber}`;
+            } else {
+                statusEl.textContent = "هیچ شوێنێک تۆمار نەکراوە";
+            }
+        }
+
+        function goToKhatmPosition() {
+            const saved = localStorage.getItem('quran_khatm_position');
+            if (!saved) {
+                alert("تکایە سەرەتا شوێنێک وەک خەتم دیاری بکە.");
+                return;
+            }
+            const data = JSON.parse(saved);
+            loadSurah(data.surahNumber);
+            
+            setTimeout(() => {
+                const targetIndex = data.ayahNumber - 1;
+                const box = document.getElementById(`ayah-box-${targetIndex}`);
+                if (box) {
+                    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    box.classList.add('bg-emerald-100');
+                    setTimeout(() => box.classList.remove('bg-emerald-100'), 2000);
+                }
+            }, 500);
+
+            if (window.innerWidth < 1024) {
+                toggleSidebar();
+            }
+        }
+
+        // Initialize on Load
+        window.onload = () => {
+            fetchSurahs();
+            lucide.createIcons();
+        };
+    </script>
+</body>
+</html>
