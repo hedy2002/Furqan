@@ -1,5 +1,5 @@
-const SHELL_CACHE = 'furqan-shell-v2';
-const RUNTIME_CACHE = 'furqan-runtime-v1';
+const SHELL_CACHE = 'furqan-shell-v5';
+const RUNTIME_CACHE = 'furqan-runtime-v4';
 const APP_SHELL = [
     '/',
     '/index.html',
@@ -10,10 +10,11 @@ const APP_SHELL = [
     '/icon-192.png',
     '/icon-512.png'
 ];
+const APP_SHELL_PATHS = new Set(APP_SHELL.map(path => new URL(path, self.location.origin).pathname));
 const OPTIONAL_ASSETS = [
     'https://cdn.tailwindcss.com',
     'https://unpkg.com/lucide@latest',
-    'https://cdn.jsdelivr.net/npm/adhan@4.4.2/lib/bundles/adhan.min.js'
+    'https://cdn.jsdelivr.net/npm/adhan@4.4.6/lib/bundles/adhan.umd.min.js'
 ];
 
 self.addEventListener('install', event => {
@@ -47,14 +48,38 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const request = event.request;
     if (request.method !== 'GET') return;
+    const requestUrl = new URL(request.url);
+    const isAppShellRequest = requestUrl.origin === self.location.origin && APP_SHELL_PATHS.has(requestUrl.pathname);
 
     if (request.mode === 'navigate') {
-        event.respondWith(fetch(request)
-            .then(response => {
-                caches.open(SHELL_CACHE).then(cache => cache.put(request, response.clone()).catch(() => {}));
+        event.respondWith((async () => {
+            try {
+                const response = await fetch(request);
+                if (response.ok) {
+                    const shellCache = await caches.open(SHELL_CACHE);
+                    await shellCache.put(request, response.clone());
+                }
                 return response;
-            })
-            .catch(async () => await caches.match(request) || await caches.match('/index.html')));
+            } catch {
+                return await caches.match(request) || await caches.match('/index.html');
+            }
+        })());
+        return;
+    }
+
+    if (isAppShellRequest) {
+        event.respondWith((async () => {
+            try {
+                const response = await fetch(request);
+                if (response.ok) {
+                    const shellCache = await caches.open(SHELL_CACHE);
+                    await shellCache.put(request, response.clone());
+                }
+                return response;
+            } catch {
+                return await caches.match(request);
+            }
+        })());
         return;
     }
 
