@@ -1,11 +1,11 @@
-const SHELL_CACHE = 'furqan-shell-v1';
+const SHELL_CACHE = 'furqan-shell-v2';
 const RUNTIME_CACHE = 'furqan-runtime-v1';
 const APP_SHELL = [
     '/',
     '/index.html',
     '/quran.html',
     '/manifest.json',
-    '/5332468401164721215.jpg',
+    '/5332635273529073463.jpg',
     '/apple-touch-icon.png',
     '/icon-192.png',
     '/icon-512.png'
