@@ -104,6 +104,16 @@
                 <i data-lucide="compass" class="w-4 h-4"></i>
                 <span>کاتی بانگ و قیبلە</span>
             </button>
+
+            <button onclick="switchTab('seerah')" id="tab-seerah" class="tab-btn px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 text-emerald-100 hover:bg-emerald-800 whitespace-nowrap">
+                <i data-lucide="book-open" class="w-4 h-4"></i>
+                <span>سێرەی پێغەمبەر</span>
+            </button>
+
+            <button onclick="switchTab('prophets')" id="tab-prophets" class="tab-btn px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 text-emerald-100 hover:bg-emerald-800 whitespace-nowrap">
+                <i data-lucide="users-round" class="w-4 h-4"></i>
+                <span>چیرۆکی پێغەمبەران</span>
+            </button>
         </div>
     </nav>
 
@@ -111,7 +121,7 @@
     <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">
         <div id="searchSection" class="mb-6">
             <div class="relative max-w-xl mx-auto">
-                <input type="text" id="searchInput" placeholder="گەڕان لە دەقی فەرموودە یان ناوی ڕاوی..." 
+                <input type="text" id="searchInput" placeholder="گەڕان لە ناوەڕۆک..."
                        class="w-full py-3 pr-11 pl-4 rounded-xl text-slate-900 bg-white shadow border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 <div class="absolute right-3 top-3 text-slate-400">
                     <i data-lucide="search" class="w-5 h-5"></i>
@@ -140,6 +150,7 @@
         <button id="doneIosInstallDialog" type="button" class="mt-5 w-full rounded-lg bg-emerald-800 px-4 py-2 font-bold text-white hover:bg-emerald-900">باشە</button>
     </dialog>
 
+    <script src="/stories-data.js"></script>
     <script>
         const baseSahih = [
             { matn: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى", translation: "کردەوەکان بەپێی نیەتەکان دەپێورێن، و بۆ هەر کەسێک ئەوەیە کە نیەتی هێناوە.", narrator: "عومەری کوڕی خەتتاب", collector: "صحيح البخاري ومسلم" },
@@ -334,6 +345,7 @@
 
         function switchTab(tab) {
             if (prayerTimerInterval) clearInterval(prayerTimerInterval);
+            if ('speechSynthesis' in window) stopNarration();
             currentTab = tab;
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.getElementById(`tab-${tab}`);
@@ -352,6 +364,7 @@
         }
 
         searchInput.addEventListener('input', () => {
+            if (currentTab === 'seerah' || currentTab === 'prophets') stopNarration();
             renderContent();
         });
 
@@ -368,6 +381,10 @@
                 renderRuqyah(query);
             } else if (currentTab === 'prayer') {
                 renderPrayerTimes();
+            } else if (currentTab === 'seerah') {
+                renderSeerah(query);
+            } else if (currentTab === 'prophets') {
+                renderProphets(query);
             }
             lucide.createIcons();
         }
@@ -623,6 +640,174 @@
             });
             html += `</div>`;
             mainContainer.innerHTML = html;
+        }
+
+        let activeSpeechStatusId = '';
+        let activeSpeechUtterance = null;
+
+        function setSpeechStatus(message) {
+            if (!activeSpeechStatusId) return;
+            const status = document.getElementById(activeSpeechStatusId);
+            if (status) status.textContent = message;
+        }
+
+        function getNarrationText(section, id) {
+            if (section === 'seerah') {
+                const chapter = window.FurqanStories.seerah.find(item => item.id === id);
+                return chapter ? `${chapter.title}. ${chapter.text}` : '';
+            }
+            const prophet = window.FurqanStories.prophets.find(item => item.id === id);
+            return prophet ? `${prophet.name}. ژیاننامە: ${prophet.life} نیشانەکان: ${prophet.signs} وانەکان: ${prophet.lessons}` : '';
+        }
+
+        function playNarration(section, id) {
+            if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+                activeSpeechStatusId = `speech-status-${section}-${id}`;
+                setSpeechStatus('خوێندنەوەی دەنگی لەم وێبگەڕەدا بەردەست نییە.');
+                return;
+            }
+
+            const text = getNarrationText(section, id);
+            if (!text) return;
+
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ckb-IQ';
+            utterance.rate = 0.9;
+            const kurdishVoice = window.speechSynthesis.getVoices().find(voice => /^(ckb|ku)(-|$)/i.test(voice.lang));
+            if (kurdishVoice) utterance.voice = kurdishVoice;
+
+            activeSpeechStatusId = `speech-status-${section}-${id}`;
+            activeSpeechUtterance = utterance;
+            utterance.onend = () => {
+                if (activeSpeechUtterance !== utterance) return;
+                setSpeechStatus('خوێندنەوە تەواو بوو.');
+                activeSpeechUtterance = null;
+            };
+            utterance.onerror = () => {
+                if (activeSpeechUtterance !== utterance) return;
+                setSpeechStatus('خوێندنەوەی دەنگی لەم وێبگەڕەدا پشتگیری ناکرێت.');
+                activeSpeechUtterance = null;
+            };
+            setSpeechStatus(kurdishVoice ? 'خوێندنەوە دەستی پێکرد.' : 'خوێندنەوە دەستی پێکرد؛ دەنگی کوردی لە هەموو ئامێرێکدا بەردەست نییە.');
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function pauseNarration() {
+            if (!('speechSynthesis' in window) || !window.speechSynthesis.speaking) return;
+            window.speechSynthesis.pause();
+            setSpeechStatus('خوێندنەوە ڕاگیراوە.');
+        }
+
+        function resumeNarration() {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.resume();
+            setSpeechStatus('خوێندنەوە بەردەوامە.');
+        }
+
+        function stopNarration() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            setSpeechStatus('خوێندنەوە وەستێنرا.');
+            activeSpeechUtterance = null;
+            activeSpeechStatusId = '';
+        }
+
+        function narrationControls(section, id) {
+            const statusId = `speech-status-${section}-${id}`;
+            return `
+                <div class="mt-4 border-t border-slate-100 pt-3">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" onclick="playNarration('${section}', '${id}')" class="inline-flex items-center gap-2 rounded-lg bg-emerald-800 px-3 py-2 text-sm font-bold text-white hover:bg-emerald-900">
+                            <i data-lucide="play" class="h-4 w-4" aria-hidden="true"></i>گوێگرتن
+                        </button>
+                        <button type="button" onclick="pauseNarration()" aria-label="ڕاگرتنی خوێندنەوە" title="ڕاگرتن" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50">
+                            <i data-lucide="pause" class="h-4 w-4" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" onclick="resumeNarration()" aria-label="بەردەوامبوونی خوێندنەوە" title="بەردەوامبوون" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50">
+                            <i data-lucide="play" class="h-4 w-4" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" onclick="stopNarration()" aria-label="وەستاندنی خوێندنەوە" title="وەستاندن" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50">
+                            <i data-lucide="square" class="h-4 w-4" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <p id="${statusId}" role="status" aria-live="polite" class="mt-2 min-h-5 text-xs text-slate-500"></p>
+                </div>
+            `;
+        }
+
+        function renderSeerah(query) {
+            const chapters = window.FurqanStories.seerah.filter(chapter =>
+                `${chapter.title} ${chapter.summary} ${chapter.text}`.toLowerCase().includes(query)
+            );
+
+            if (!chapters.length) {
+                mainContainer.innerHTML = `<p class="py-12 text-center text-slate-500">هیچ بەشێکی سێرە نەدۆزرایەوە.</p>`;
+                return;
+            }
+
+            mainContainer.innerHTML = `
+                <section class="space-y-5">
+                    <header class="border-b border-emerald-200 pb-4">
+                        <p class="text-sm font-bold text-amber-700">الرحیق المختوم</p>
+                        <h2 class="mt-1 text-2xl font-bold text-emerald-950">سێرەی پێغەمبەر ﷺ</h2>
+                        <p class="mt-2 max-w-3xl text-sm leading-7 text-slate-600">${window.FurqanStories.seerahIntro}</p>
+                    </header>
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        ${chapters.map((chapter, index) => `
+                            <details class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                                <summary class="cursor-pointer list-none">
+                                    <span class="text-xs font-bold text-amber-700">بەشی ${String(index + 1).padStart(2, '0')}</span>
+                                    <h3 class="mt-2 text-lg font-bold text-emerald-950">${chapter.title}</h3>
+                                    <p class="mt-2 text-sm leading-6 text-slate-600">${chapter.summary}</p>
+                                </summary>
+                                <p class="mt-4 border-t border-slate-100 pt-4 text-sm leading-8 text-slate-700">${chapter.text}</p>
+                                ${narrationControls('seerah', chapter.id)}
+                            </details>
+                        `).join('')}
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderProphets(query) {
+            const prophets = window.FurqanStories.prophets.filter(prophet =>
+                `${prophet.name} ${prophet.arabic} ${prophet.life} ${prophet.signs} ${prophet.lessons}`.toLowerCase().includes(query)
+            );
+
+            if (!prophets.length) {
+                mainContainer.innerHTML = `<p class="py-12 text-center text-slate-500">هیچ پێغەمبەرێک نەدۆزرایەوە.</p>`;
+                return;
+            }
+
+            mainContainer.innerHTML = `
+                <section class="space-y-5">
+                    <header class="border-b border-emerald-200 pb-4">
+                        <p class="text-sm font-bold text-amber-700">پێغەمبەرانی ناو قورئان</p>
+                        <h2 class="mt-1 text-2xl font-bold text-emerald-950">چیرۆک و ژیاننامەی پێغەمبەران</h2>
+                        <p class="mt-2 max-w-3xl text-sm leading-7 text-slate-600">ژیان، نیشانە و وانەی هەر پێغەمبەرێک بە پوختەیەکی کوردیی سەربەخۆ.</p>
+                    </header>
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                        ${prophets.map((prophet, index) => `
+                            <details class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                                <summary class="cursor-pointer list-none">
+                                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-800">
+                                        <i data-lucide="sparkles" class="h-5 w-5" aria-hidden="true"></i>
+                                    </span>
+                                    <span class="mt-3 block text-xs font-bold text-amber-700">پێغەمبەر ${String(index + 1).padStart(2, '0')}</span>
+                                    <h3 class="mt-1 text-lg font-bold text-emerald-950">${prophet.name}</h3>
+                                    <p class="text-sm text-slate-500" lang="ar" dir="rtl">${prophet.arabic}</p>
+                                </summary>
+                                <div class="mt-4 space-y-4 border-t border-slate-100 pt-4 text-sm leading-7 text-slate-700">
+                                    <p><strong class="text-emerald-900">ژیاننامە:</strong> ${prophet.life}</p>
+                                    <p><strong class="text-emerald-900">نیشانەکان:</strong> ${prophet.signs}</p>
+                                    <p><strong class="text-emerald-900">وانە:</strong> ${prophet.lessons}</p>
+                                </div>
+                                ${narrationControls('prophets', prophet.id)}
+                            </details>
+                        `).join('')}
+                    </div>
+                </section>
+            `;
         }
 
         // --- RENDER PRAYER TIMES & QIBLA ---

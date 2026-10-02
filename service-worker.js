@@ -1,8 +1,9 @@
-const SHELL_CACHE = 'furqan-shell-v5';
-const RUNTIME_CACHE = 'furqan-runtime-v4';
+const SHELL_CACHE = 'furqan-shell-v6';
+const RUNTIME_CACHE = 'furqan-runtime-v5';
 const APP_SHELL = [
     '/',
     '/index.html',
+    '/stories-data.js',
     '/quran.html',
     '/manifest.json',
     '/5332635273529073463.jpg',
