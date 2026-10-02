@@ -7,7 +7,11 @@
     <meta name="description" content="فەرموودە، زیکر و دوعای ڕۆژانە، قیبلەنما، و ڕوقیەی شەرعی">
     <meta name="theme-color" content="#064e3b">
     <link rel="icon" type="image/jpeg" href="/5332468401164721215.jpg">
-    <link rel="apple-touch-icon" href="/5332468401164721215.jpg">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Furqan">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://chnar.vercel.app/">
     <meta property="og:locale" content="ckb_IQ">
@@ -30,6 +34,7 @@
         body { font-family: 'Noto Naskh Arabic', serif; }
         .tab-btn.active { background-color: #f59e0b; color: #064e3b; font-weight: bold; }
         .sub-tab-btn.active { background-color: #059669; color: #ffffff; font-weight: bold; }
+        #installAppButton[hidden] { display: none; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
@@ -45,10 +50,16 @@
                 </div>
             </div>
             
-            <a href="quran.html" class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm">
-                <i data-lucide="book" class="w-4 h-4"></i>
-                <span>چوون بۆ قورئانی پیرۆز 📖</span>
-            </a>
+            <div class="flex flex-col sm:flex-row gap-2">
+                <button id="installAppButton" type="button" hidden class="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-2 rounded-xl text-sm transition">
+                    <i data-lucide="download" class="w-4 h-4" aria-hidden="true"></i>
+                    <span>دامەزراندنی ئەپ</span>
+                </button>
+                <a href="quran.html" class="flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm">
+                    <i data-lucide="book" class="w-4 h-4"></i>
+                    <span>چوون بۆ قورئانی پیرۆز 📖</span>
+                </a>
+            </div>
         </div>
     </header>
 
@@ -110,6 +121,20 @@
     <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-center text-xs">
         <p>ماڵپەڕی فەرموودە، زیکر، دوعا و ڕوقیەی شەرعی © 2026</p>
     </footer>
+
+    <dialog id="iosInstallDialog" dir="rtl" aria-labelledby="iosInstallTitle" class="w-[min(92vw,28rem)] rounded-2xl p-6 text-right text-slate-800 shadow-2xl backdrop:bg-slate-950/60">
+        <div class="flex items-start justify-between gap-4">
+            <h2 id="iosInstallTitle" class="text-lg font-bold text-emerald-900">زیادکردنی ئەپ بۆ شاشەی سەرەکی</h2>
+            <button id="closeIosInstallDialog" type="button" aria-label="داخستن" class="text-slate-500 hover:text-slate-900">
+                <i data-lucide="x" class="w-5 h-5" aria-hidden="true"></i>
+            </button>
+        </div>
+        <ol class="mt-4 list-decimal space-y-2 pr-6 text-sm leading-6">
+            <li>لە Safari، دوگمەی Share بکە.</li>
+            <li>«Add to Home Screen» هەڵبژێرە و پاشان زیادکردن پشتڕاست بکەرەوە.</li>
+        </ol>
+        <button id="doneIosInstallDialog" type="button" class="mt-5 w-full rounded-lg bg-emerald-800 px-4 py-2 font-bold text-white hover:bg-emerald-900">باشە</button>
+    </dialog>
 
     <script>
         const baseSahih = [
@@ -648,6 +673,56 @@
         window.addEventListener('DOMContentLoaded', () => {
             switchTab('صحيح');
         });
+    </script>
+    <script>
+        (() => {
+            const installButton = document.getElementById('installAppButton');
+            const iosDialog = document.getElementById('iosInstallDialog');
+            const iosCloseButton = document.getElementById('closeIosInstallDialog');
+            const iosDoneButton = document.getElementById('doneIosInstallDialog');
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            const isIOS = /iPhone|iPad|iPod/.test(window.navigator.userAgent) || (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+            let installPromptEvent = null;
+
+            if (window.lucide) window.lucide.createIcons();
+
+            if (!isStandalone && isIOS) installButton.hidden = false;
+
+            window.addEventListener('beforeinstallprompt', event => {
+                event.preventDefault();
+                installPromptEvent = event;
+                installButton.hidden = false;
+            });
+
+            installButton.addEventListener('click', async () => {
+                if (installPromptEvent) {
+                    await installPromptEvent.prompt();
+                    const choice = await installPromptEvent.userChoice;
+                    installPromptEvent = null;
+                    if (choice.outcome === 'accepted') installButton.hidden = true;
+                    return;
+                }
+
+                if (isIOS && typeof iosDialog.showModal === 'function') iosDialog.showModal();
+            });
+
+            const closeIOSDialog = () => iosDialog.close();
+            iosCloseButton.addEventListener('click', closeIOSDialog);
+            iosDoneButton.addEventListener('click', closeIOSDialog);
+
+            window.addEventListener('appinstalled', () => {
+                installPromptEvent = null;
+                installButton.hidden = true;
+            });
+
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/service-worker.js').catch(error => {
+                        console.error('Service worker registration failed:', error);
+                    });
+                });
+            }
+        })();
     </script>
 </body>
 </html>

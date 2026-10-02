@@ -1,0 +1,28 @@
+{
+  "id": "/",
+  "name": "پایگای فەرموودە و زیکرەکان",
+  "short_name": "Furqan",
+  "description": "فەرموودە، زیکر و دوعای ڕۆژانە، قیبلەنما، و ڕوقیەی شەرعی",
+  "lang": "ckb-IQ",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#064e3b",
+  "categories": ["education", "books"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
