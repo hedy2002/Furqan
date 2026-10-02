@@ -929,7 +929,15 @@
                 { name: 'عیشا', time: prayerTimes.isha, code: 'isha' }
             ];
 
-            const nextPrayerCode = prayerTimes.nextPrayer();
+            const mainPrayerList = list.filter(prayer => prayer.code !== 'sunrise');
+            const currentTime = new Date();
+            let nextPrayerEntry = mainPrayerList.find(prayer => prayer.time > currentTime);
+            if (!nextPrayerEntry) {
+                const tomorrow = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+                const tomorrowTimes = new adhan.PrayerTimes(coordinates, tomorrow, params);
+                nextPrayerEntry = { code: 'fajr', name: 'بەیانی', time: tomorrowTimes.fajr };
+            }
+            const nextPrayerCode = nextPrayerEntry.code;
             const prayerCardsContainer = document.getElementById('prayerCardsContainer');
             if (!prayerCardsContainer) return;
 
@@ -951,7 +959,7 @@
             prayerCardsContainer.innerHTML = cardsHtml;
 
             // Next Prayer Countdown
-            const nextPrayerTime = prayerTimes.timeForPrayer(nextPrayerCode);
+            const nextPrayerTime = nextPrayerEntry.time;
             const countdownEl = document.getElementById('nextPrayerCountdown');
             if (nextPrayerTime && countdownEl) {
                 const diff = nextPrayerTime - new Date();
@@ -959,7 +967,7 @@
                     const hrs = Math.floor(diff / (1000 * 60 * 60));
                     const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                     const secs = Math.floor((diff % (1000 * 60)) / 1000);
-                    countdownEl.innerText = `کاتی ماوە بۆ بانگی داھاتوو: ${hrs} کاتژمێر و ${mins} خولەک و ${secs} چرکە`;
+                    countdownEl.innerText = `کاتی بانگی ${nextPrayerEntry.name}ی داهاتوو: ${hrs} کاتژمێر و ${mins} خولەک و ${secs} چرکە`;
                 }
             }
 
